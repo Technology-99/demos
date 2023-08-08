@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://public-jiachao.iotdreamcatcher.net/js/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript" src="./crypto-js.js"></script>
+    <script src="./test.js"></script>
+</head>
+
+<body>
+    <div id="text"></div>
+    <script>
+        let timer = null;
+
+        // todo: 编写websocket demo
+        const url = "ws://localhost:8080/v2/ws/signal/222678"
+        let ws = new WebSocket(url)
+        ws.onopen = function (params) {
+            console.log("on open ", params)
+            $("#text").text("链接成功")
+
+            ws.send(encrypt_req(encKey, iv, "测试一下服务器"))
+
+            ws.send(encrypt_req(encKey, iv, "你好棒棒"))
+            
+
+        }
+        ws.onerror = function (params) {
+            console.log("onerror ", params)
+        }
+        ws.onclose = function (params) {
+            console.log("onclose ", params)
+        }
+        ws.onmessage = function (event) {
+            console.log("onmessage", event)
+
+            //判断是否为Blob格式的数据
+            if (event.data instanceof Blob) {
+                var blob = event.data;
+
+                //通过FileReader读取数据
+                var reader = new FileReader();
+
+                //以下这两种方式我都可以解析出来，因为Blob对象的数据可以按文本或二进制的格式进行读取
+                // reader.readAsBinaryString(blob);
+                reader.readAsText(blob, 'utf8');
+
+                reader.onload = function () {
+                    var receive_data = this.result;//这个就是解析出来的数据
+                    // $("#text").text(receive_data)
+                    console.log(receive_data)
+                    // decrypt_req(encKey, iv, receive_data)
+                    // todo: 这里需要解开数据
+                    console.log("deData", decrypt_req(encKey, iv, receive_data))
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
