@@ -1,0 +1,6 @@
+Name: user-api
+Host: 0.0.0.0
+Port: 8888
+Auth:
+  AccessSecret: "tech99qixiwgdhlo58k2bi"
+  AccessExpire: 3600
